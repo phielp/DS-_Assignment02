@@ -1,6 +1,7 @@
 import java.lang.*;
 import java.util.*;
 
+// hash table using collision chaining method
 public class ChainedTable {
 
 	private LinkedHashList[] hashtable;

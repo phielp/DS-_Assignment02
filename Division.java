@@ -1,7 +1,7 @@
 public class Division implements Compressable {
     public int table_length;
     public int initial = 11;
-    public int multiplier = 31;
+    public int multiplier = 13;
     
     public Division(int length) {
         table_length = length;
