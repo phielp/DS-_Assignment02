@@ -1,32 +1,67 @@
-public class Linear implements Compressable {
+public class Linear {
 	private String[] keys;
 	private int hsize;
 	private String[] values;
 	private Compressable comp;
+	private int numberofitems;
 
-	public Linear(int size)
+	// constructor
+	public Linear(int size, Compressable comp)
 	{
 		this.hsize = size;
-		this.hashTable = new Pair[size];
-
+		this.keys = new String[size];
+		this.values = new String[size];
+		this.comp = comp;
 	}
 
-	public hashTable()
-	{
-		return this.hashTable;
-	}
+	// if table is too full, enlarge it
+    public void resize()
+    {
+    	hsize = 2 * hsize;
+    	String[] newkeys = new String[hsize];
+    	String[] newvalues = new String[hsize];
 
-	public String getVal(String key)
+    	// put all entries in new table
+    	int i = 0;
+    	while (i < hsize/2)
+    	{
+    		if (keys[i] != null)
+    		{
+    			newkeys[i] = keys[i];
+    			newvalues[i] = values[i];
+    		}
+    		i++;
+    	}
+
+    	keys = newkeys;
+    	values = newvalues;
+    }
+
+    // check if table needs to be resized
+    public void resizecheck()
+    {
+    	if (((double) numberofitems/hsize) > 0.75)
+    	{
+    		resize();
+    	}
+    }
+
+    public int size()
+    {
+    	return this.hsize;
+    }
+
+	public String get(String key)
 	{
 		int i = comp.calcIndex(key);
-		int originali= i;
+		int originali = i;
 
 		// check if key exists
 		while (i < this.hsize)
 		{
-			if (key.equals(keys[i])) 
+			if (key.equals(this.keys[i])) 
 			{
-				return values[i];
+				return this.values[i];
 			}
 			i++;
 		}
@@ -35,9 +70,9 @@ public class Linear implements Compressable {
 		i = 0;
 		while (i < this.hsize)
 		{
-			if (key.equals(keys[i])) 
+			if (key.equals(this.keys[i])) 
 			{
-				return values[i];
+				return this.values[i];
 			}
 			i++;
 		}
@@ -45,16 +80,27 @@ public class Linear implements Compressable {
 		return null;
 	}
 
-	public void add(String key, String value)
+	public void put(String key, String value)
 	{
 		int i = comp.calcIndex(key);
 
+		resizecheck();
+		if (this.keys[i] == null) 
+		{
+			this.keys[i] = key;
+			this.values[i] = value;
+			this.numberofitems++;
+			return;
+		}
+
 		while (i < this.hsize)
 		{
-			if (keys[i] == null) 
+			if (this.keys[i] == null) 
 			{
-				keys[i] = key;
-				values[i] = value;
+				this.keys[i] = key;
+				this.values[i] = value;
+				this.numberofitems++;
+				return;
 			}
 			i++;
 		}
@@ -63,14 +109,15 @@ public class Linear implements Compressable {
 		i=0;
 		while (i < this.hsize)
 		{
-			if (keys[i] == null) 
+			if (this.keys[i] == null) 
 			{
-				keys[i] = key;
-				values[i] = value;
+				this.keys[i] = key;
+				this.values[i] = value;
+				this.numberofitems++;
+				return;
 			}
 			i++;
 		}
-
 
 	}
 
